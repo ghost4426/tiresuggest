@@ -22,31 +22,34 @@ import javax.xml.validation.Validator;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import dto.Tire;
+import java.io.Serializable;
+import javax.servlet.ServletContext;
 
 /**
  *
  * @author Gian Tran
  */
-public class XMLUtil {
+public class XMLUtil implements Serializable {
 
-    public static boolean validateWithSchema(Tire tire) {
+    public static boolean validateWithSchema(Tire tire, ServletContext context) {
         try {
             String xml = marshall(tire);
-            String schemaPath = "web/schema/tire.xsd";
+            String schemaPath = "schema/tire.xsd";
+            Schema schema;
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(new File(schemaPath));
+            
+            schema = sf.newSchema(new File(context.getRealPath("/" + schemaPath)));
             Validator validator = schema.newValidator();
 
             InputSource inputFile = new InputSource(new StringReader(xml));
             validator.validate(new SAXSource(inputFile));
 
-            System.out.println("Validated: " + tire.getName());
+//            System.out.println("Validated: " + tire.getName());
             return true;
         } catch (SAXException | IOException ex) {
+            System.out.println("----------------------------");
             System.out.println("Validated fail: " + tire.getName());
-            if(ex.getMessage().contains("TypeSize")){
-                System.out.println("Size is invalid"); 
-            }
+            System.out.println(ex.getMessage());
         }
         return false;
     }
@@ -58,7 +61,6 @@ public class XMLUtil {
             Marshaller marshaller = jaxbCtx.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            marshaller.marshal(tire, new File("web/tire.xml"));
             marshaller.marshal(tire, sw);
         } catch (JAXBException ex) {
             Logger.getLogger(XMLUtil.class.getName()).log(Level.SEVERE, null, ex);

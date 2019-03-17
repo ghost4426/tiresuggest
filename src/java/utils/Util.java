@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 
 /**
  *
@@ -70,14 +71,19 @@ public class Util {
         return brand;
     }
 
-    public static String saveImage(String imageUrl, String filePath) {
+    public static String saveImage(String imageUrl, String filePath, ServletContext context) {
         try {
             URL url = new URL(imageUrl);
             InputStream is = url.openStream();
-            OutputStream os = new FileOutputStream("web/img/" + filePath.replaceAll("/", "-").replaceAll(" ", "_"));
+
+            String path = context.getRealPath("/");
+            path = path.substring(0, path.lastIndexOf("build"));
+            filePath = filePath.replaceAll("/", "-").replaceAll(" ", "_");
+
+            OutputStream os = new FileOutputStream(path + "img/" +filePath);
+
             byte[] b = new byte[2048];
             int length;
-
             while ((length = is.read(b)) != -1) {
                 os.write(b, 0, length);
             }
@@ -85,11 +91,13 @@ public class Util {
             is.close();
             os.close();
         } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
             filePath = "notfound.png";
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException e) {
+            System.out.println(e.getMessage());
+            filePath = "notfound.png";
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return filePath;
     }

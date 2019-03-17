@@ -33,7 +33,7 @@ public class Tire implements java.io.Serializable {
     private String schemaLocation = "http://www.netbeans.org/schema/Tire ../web/schema/tire.xsd";
 
     @XmlAttribute(name="Id")
-    private int id;
+    private long id;
     
     @XmlElement(name = "Name")
     private String name;
@@ -60,7 +60,7 @@ public class Tire implements java.io.Serializable {
         this.id = id;
     }
 
-    public Tire(int id, String name, String brand, String size, String price, Boolean isValidate, String imgUrl) {
+    public Tire(long id, String name, String brand, String size, String price, Boolean isValidate, String imgUrl) {
         this.id = id;
         this.name = name;
         this.brand = brand;
@@ -79,11 +79,11 @@ public class Tire implements java.io.Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

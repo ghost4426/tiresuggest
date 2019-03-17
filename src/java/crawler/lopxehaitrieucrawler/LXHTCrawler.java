@@ -13,11 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.servlet.ServletContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -27,18 +27,19 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class LXHTCrawler extends BaseCrawler {
 
-    private final String url;
-    private final String brandName;
+    private String url;
+    private String brandName;
+    private ServletContext context;
 
-    public LXHTCrawler(String url, String brandName) {
+    public LXHTCrawler(String url, String brandName, ServletContext context) {
         this.url = url;
         this.brandName = brandName;
+        this.context = context;
     }
 
     private int getLastPage(String document)
             throws UnsupportedEncodingException, XMLStreamException {
         int number = 1;
-        int tmp = 0;
         String link = "";
         document = document.trim().replaceAll("&laquo;", "").replaceAll("&#8249; ", "").replace("&#8250;", "").replace("&raquo;", "");
         XMLEventReader eventReader = parseStringToXMLEventReader(document);
@@ -93,9 +94,9 @@ public class LXHTCrawler extends BaseCrawler {
             }
             int lastPage = getLastPage(document);
             for (int i = 0; i < lastPage; i++) {
-                String pageUrl = url + "&p=" + (i + 1);
-                new LXHTEachPageCrawler(pageUrl, brandName).startCrawl();
-                System.out.println("Parsed URL: " + pageUrl);
+                String pageUrl = url + "1/&p=" + (i + 1);
+                new LXHTEachPageCrawler(pageUrl, brandName, context).startCrawl();
+//                System.out.println("Parsed URL: " + pageUrl);
             }
         } catch (IOException | XMLStreamException e) {
             Logger.getLogger(LXHTCrawler.class.getName()).log(Level.SEVERE, null, e);

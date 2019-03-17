@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
@@ -27,10 +28,12 @@ public class TTVXCrawler extends BaseCrawler {
 
     private final String url;
     private final String brandName;
+    private ServletContext context;
 
-    public TTVXCrawler(String url, String brandName) {
+    public TTVXCrawler(String url, String brandName, ServletContext context) {
         this.url = url;
         this.brandName = brandName;
+        this.context = context;
     }
 
    
@@ -88,8 +91,8 @@ public class TTVXCrawler extends BaseCrawler {
             int lastPage = getLastPage(document);
             for (int i = 0; i < lastPage; i++) {
                 String pageUrl = url + "?page" + (i + 1);
-                new TTVXEachPageCrawler(pageUrl, brandName).startCrawl();
-                System.out.println("Parsed URL: " + pageUrl);
+                new TTVXEachPageCrawler(pageUrl, brandName, context).startCrawl();
+//                System.out.println("Parsed URL: " + pageUrl);
             }
         } catch (IOException | XMLStreamException e) {
             Logger.getLogger(TTVXCrawler.class.getName()).log(Level.SEVERE, null, e);

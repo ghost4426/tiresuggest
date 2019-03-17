@@ -28,16 +28,15 @@ public class test {
         categories = new TTVXCategoriesCrawler().getCategories("http://www.trungtamvoxe.com/");
 //        categories.put("michellin", "http://www.trungtamvoxe.com/vo-xe-du-lich/michellin/341.html");
         for (Map.Entry<String, String> entry : categories.entrySet()) {
-            new TTVXCrawler(entry.getValue(), entry.getKey()).startCrawl();
+            new TTVXCrawler(entry.getValue(), entry.getKey(), null).startCrawl();
         }
 
-        categories = new LXHTCategoriesCrawler().getCategories("http://www.lopxehaitrieu.com/");
-//        categories.put("Toyo", "http://www.lopxehaitrieu.com/lop-xe/toyo/");
-        for (Map.Entry<String, String> entry : categories.entrySet()) {
-            new LXHTCrawler(entry.getValue(), entry.getKey()).startCrawl();
-        }
-        
-        
+//        categories = new LXHTCategoriesCrawler().getCategories("http://www.lopxehaitrieu.com/");
+////        categories.put("Toyo", "http://www.lopxehaitrieu.com/lop-xe/toyo/");
+//        for (Map.Entry<String, String> entry : categories.entrySet()) {
+//            new LXHTCrawler(entry.getValue(), entry.getKey(), null).startCrawl();
+//        }
+
 //        TireDAO dao = new TireDAO();
 //        List<Tire> t = new ArrayList<>();
 //        t = dao.getListTireBySize("205/65R15");
@@ -45,7 +44,6 @@ public class test {
 //            System.out.println(t.get(i).getName());
 //        }
 //        Util.saveImage("http://www.trungtamvoxe.com/images/img_thum/bridgestone-alenza001(1).jpg", "img.jpg");
-
         System.exit(0);
     }
 }

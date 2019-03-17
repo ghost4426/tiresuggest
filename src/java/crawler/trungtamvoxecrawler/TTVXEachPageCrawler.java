@@ -34,10 +34,12 @@ public class TTVXEachPageCrawler extends BaseCrawler {
 
     private String url;
     private String BrandName;
+    private ServletContext context;
 
-    public TTVXEachPageCrawler(String url, String BrandName) {
+    public TTVXEachPageCrawler(String url, String BrandName, ServletContext context) {
         this.url = url;
         this.BrandName = BrandName;
+        this.context = context;
     }
 
     public void startCrawl() {
@@ -92,6 +94,7 @@ public class TTVXEachPageCrawler extends BaseCrawler {
                     }
                 }
                 if ("div".equals(tagName) && isStart) {
+
                     while (startElement.getAttributeByName(new QName("src")) == null) {
                         event = (XMLEvent) eventReader.next();
                         if (event.isStartElement()) {
@@ -136,24 +139,25 @@ public class TTVXEachPageCrawler extends BaseCrawler {
                             }
                         }
                     }
-                    Date date = new Date();
+
                     Tire tire = getTireSizeAndName(productName);
-                    tire.setId((int) date.getTime());
-                    tire.setBrand(BrandName);
                     String filePath = "";
-                    if (!tire.getSize().endsWith("")) {
+                    if (!tire.getSize().equals("")) {
                         filePath = BrandName + "_" + tire.getSize() + ".jpg";
                     } else {
-                        filePath = tire.getName();
+                        filePath = tire.getName() + ".jpg";
                     }
-                    filePath = Util.saveImage(imgLink.trim(), filePath);
+                    filePath = Util.saveImage(imgLink.trim(), filePath, context);
+
+                    tire.setId(new Date().getTime());
+                    tire.setBrand(BrandName);
                     tire.setImgUrl(filePath);
                     tire.setPrice(price.trim());
-                    if (XMLUtil.validateWithSchema(tire)) {
+                    
+                    if (XMLUtil.validateWithSchema(tire, context)) {
                         tire.setIsValidate(Boolean.TRUE);
                     }
-                    TireDAO dao = new TireDAO();
-                    dao.addTire(tire);
+                    new TireDAO().addTire(tire);
                     isStart = false;
                 }
             }
@@ -178,4 +182,5 @@ public class TTVXEachPageCrawler extends BaseCrawler {
 
         return new Tire(0, Util.capitalizeEachWordInString(name.replaceAll("-", "").trim()), "", size.trim(), "", Boolean.FALSE, "");
     }
+
 }

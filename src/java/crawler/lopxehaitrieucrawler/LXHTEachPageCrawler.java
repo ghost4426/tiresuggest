@@ -21,6 +21,7 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import dto.Tire;
+import javax.servlet.ServletContext;
 import utils.Util;
 import utils.XMLUtil;
 
@@ -32,10 +33,12 @@ public class LXHTEachPageCrawler extends BaseCrawler {
 
     private String url;
     private String BrandName;
+    private ServletContext context;
 
-    public LXHTEachPageCrawler(String url, String BrandName) {
+    public LXHTEachPageCrawler(String url, String BrandName, ServletContext context) {
         this.url = url;
         this.BrandName = BrandName;
+        this.context = context;
     }
 
     public void startCrawl() {
@@ -150,13 +153,14 @@ public class LXHTEachPageCrawler extends BaseCrawler {
                     if (size.endsWith("")) {
                         filePath = BrandName + "_" + size + ".jpg";
                     } else {
-                        filePath = name;
+                        filePath = name + ".jpg";
                     }
-                    filePath = Util.saveImage("http://www.lopxehaitrieu.com/" + imgLink.trim(), filePath);
+                    filePath = Util.saveImage("http://www.lopxehaitrieu.com/" + imgLink.trim(), filePath, context);
                     Date date = new Date();
                     Tire tire = new Tire((int) date.getTime(), name.replaceAll("\\t", " ").trim(), BrandName, size, price, Boolean.FALSE, filePath);
-                    tire.setId((int) date.getTime());
-                    if (XMLUtil.validateWithSchema(tire)) {
+                    tire.setId(date.getTime());
+                    XMLUtil u = new XMLUtil();
+                    if (u.validateWithSchema(tire, context)) {
                         tire.setIsValidate(Boolean.TRUE);
                     }
                     TireDAO dao = new TireDAO();

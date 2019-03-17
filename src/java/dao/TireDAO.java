@@ -63,7 +63,7 @@ public class TireDAO implements Serializable {
             trans = session.beginTransaction();
             session.save(tire);
             trans.commit();
-            System.out.println("Add: " + tire.getName());
+//            System.out.println("Add: " + tire.getName());
         } catch (HibernateException ex) {
             if (trans != null) {
                 trans.rollback();
@@ -80,7 +80,7 @@ public class TireDAO implements Serializable {
             trans = session.beginTransaction();
             session.update(tire);
             trans.commit();
-            System.out.println("Update: " + tire.getName());
+//            System.out.println("Update: " + tire.getName());
         } catch (HibernateException ex) {
             if (trans != null) {
                 trans.rollback();
